@@ -7,16 +7,24 @@ dotenv.config({
   path: 'src/.env'
 });
 
-// Boot server
-import * as debug from 'debug';
-import app from './app';
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-const port = process.env.PORT || 3000;
-app.set('port', port);
+io.on('connection', function(socket){
+  console.log('a user connected', socket);
 
-app.listen(app.get('port'), () => {
-  console.log('Express server listening on port ' + port);
-}).on('error', err => {
-  console.log('Cannot start server, port most likely in use');
-  console.log(err);
+  socket.on('disconnect', function(){
+    console.log('user disconnected');
+  });
+
+  socket.on('test', function(msg){
+    console.log('message: ' + msg);
+  });
+
 });
+
+http.listen(3000, function(){
+  console.log('listening on *:3000');
+});
+
