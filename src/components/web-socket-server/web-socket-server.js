@@ -1,7 +1,7 @@
 import socketIo from 'socket.io';
 import crypto from 'crypto';
 import base64 from 'urlsafe-base64';
-
+import { sequelize } from '/models/index';
 
 export default class webSocketServer {
 
@@ -32,9 +32,13 @@ export default class webSocketServer {
    */
   _authMiddleware(socket, next) {
 
-    this.db.get(`SELECT * FROM devices WHERE \`device-id\`= ?`, socket.handshake.query.remoteId,(err, row) => {
+    sequelize.models.Remote.findOne({
+      where: {
+        device_id: socket.handshake.query.remoteId
+      }
+    }).then((row, err) => {
 
-      if (err) {
+      if (!!err) {
         return next(new Error('Authentication error: database error'));
       }
 
