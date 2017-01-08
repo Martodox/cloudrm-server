@@ -1,17 +1,13 @@
-import webSocketServer from '/web-socket-server/web-socket-server';
+import webSocketServer from '/components/web-socket-server/web-socket-server';
 import express from 'express';
 import http from 'http';
-import sqlite3 from 'sqlite3';
-
-const sqliteVerbose = sqlite3.verbose();
-
-const db = new sqliteVerbose.Database('./storage/db.db');
+import sequelize from '/models/index';
 
 const expressServer = express();
 
 const server = http.Server(expressServer);
 
-const socketServer = new webSocketServer(server, db);
+const socketServer = new webSocketServer(server);
 
 expressServer.get('/', (req, res) => {
   res.send(JSON.stringify(Object.keys(socketServer.devices)));
