@@ -11,7 +11,7 @@ const port = config['server-port'] || 3000;
 const authenticatedMiddleware = (req, res, next) => {
 
   if (!req.headers.authorization) {
-    return res.status(403).send(`Authorization token required to access ${req.baseUrl}`)
+    return res.status(403).send(`Authorization token required to access ${req.method} ${req.baseUrl}`)
   }
 
   const token = req.headers.authorization;
