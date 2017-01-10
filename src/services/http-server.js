@@ -6,7 +6,7 @@ import { Session, User } from '/models/index';
 const expressServer = express();
 const server = http.Server(expressServer);
 
-const port = config['server-port'];
+const port = config['server-port'] || 3000;
 
 const authenticatedMiddleware = (req, res, next) => {
 
