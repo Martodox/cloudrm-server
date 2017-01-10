@@ -1,19 +1,15 @@
 import socketIo from 'socket.io';
 import crypto from 'crypto';
 import base64 from 'urlsafe-base64';
-import { sequelize } from '/models/index';
 
-export default class webSocketServer {
+import { Remote } from '/models/index';
+import { http } from '/services/http-server';
 
-  /**
-   *
-   * @param server
-   * @param db
-   */
-  constructor(server, db) {
+export default class WebSocketServer {
 
-    this.socketIo = socketIo(server);
-    this.db = db;
+  constructor() {
+
+    this.socketIo = socketIo(http);
     this.remotes = {};
 
     this.socketIo.use((socket, next) => {
@@ -32,7 +28,7 @@ export default class webSocketServer {
    */
   _authMiddleware(socket, next) {
 
-    sequelize.models.Remote.findOne({
+    Remote.findOne({
       where: {
         device_id: socket.handshake.query.remoteId
       }
