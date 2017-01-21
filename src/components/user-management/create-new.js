@@ -1,5 +1,4 @@
 import { express } from '/services/http-server';
-import bodyParser from 'body-parser';
 import bcrypt from 'bcrypt-nodejs';
 import { User, Session } from '/models/index';
 import validate from 'validate.js';
@@ -21,7 +20,7 @@ var constraints = {
 
 export default class CreateNew {
   constructor() {
-    express.post('/user/new', bodyParser.urlencoded({ extended: false }), (req, res) => {
+    express.post('/user/new', (req, res) => {
 
       const isValid = validate(req.body, constraints);
 

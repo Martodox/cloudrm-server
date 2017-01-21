@@ -1,5 +1,4 @@
 import { express } from '/services/http-server';
-import bodyParser from 'body-parser';
 import validate from 'validate.js';
 import { User, Session } from '/models/index';
 import bcrypt from 'bcrypt-nodejs';
@@ -20,7 +19,7 @@ export default class SessionManagment {
       res.send(req.Session.User);
     });
 
-    express.post('/session', bodyParser.urlencoded({ extended: false }), (req, res) => {
+    express.post('/session', (req, res) => {
 
       const isValid = validate(req.body, constraints);
 

@@ -2,6 +2,7 @@ import express from 'express';
 import http from 'http';
 import { config } from '/services/config';
 import { Session, User } from '/models/index';
+import bodyParser from 'body-parser';
 
 const expressServer = express();
 const server = http.Server(expressServer);
@@ -66,6 +67,11 @@ expressServer.use('/session', (req, res, next) => {
   }
 });
 
+expressServer.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+expressServer.use(bodyParser.json());
 
 server.listen(port, () => {
   console.info(`Server had started on localhost:${port}`);
