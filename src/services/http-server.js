@@ -73,12 +73,6 @@ expressServer.use(bodyParser.urlencoded({
 
 expressServer.use(bodyParser.json());
 
-/**
- * Letsencrypt validation
- */
-expressServer.get('/.well-known', (req, res) => {
-  res.send('ok');
-});
 
 server.listen(port, () => {
   console.info(`Server had started on localhost:${port}`);
