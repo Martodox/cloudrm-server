@@ -3,6 +3,7 @@ import http from 'http';
 import { config } from '/services/config';
 import { Session, User } from '/models/index';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 const expressServer = express();
 const server = http.Server(expressServer);
@@ -51,11 +52,7 @@ const authenticatedMiddleware = (req, res, next) => {
 
 };
 
-expressServer.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, Authorization, X-Requested-With, Content-Type, Accept");
-  next();
-});
+expressServer.use(cors());
 
 expressServer.use('/session', (req, res, next) => {
   switch(req.method) {
