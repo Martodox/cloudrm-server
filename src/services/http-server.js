@@ -1,4 +1,5 @@
 import express from 'express';
+import swagger from 'swagger-jsdoc';
 import http from 'http';
 import { config } from '/services/config';
 import { Session, User } from '/models/index';
@@ -69,6 +70,23 @@ expressServer.use(bodyParser.urlencoded({
 }));
 
 expressServer.use(bodyParser.json());
+
+const swaggerSpec = swagger({
+  swaggerDefinition: {
+    info: {
+      title: 'Cloudrm',
+      version: '1.0.0',
+    },
+  },
+  apis: ['./src/components/**/*.js']
+});
+
+expressServer.get('/api-docs.json', function(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+});
+
+
 
 
 server.listen(port, () => {
