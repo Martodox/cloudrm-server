@@ -1,4 +1,8 @@
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../config/config.json')[env];
+const config = require(__dirname + '/../config/config.json');
 
-export { config }
+const envConfig = config[env];
+
+const localConfig = config['generic']
+
+export { envConfig as config, localConfig }

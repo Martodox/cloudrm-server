@@ -2,7 +2,7 @@ import { express } from '/services/http-server';
 import validate from 'validate.js';
 import { User, Session } from '/models/index';
 import bcrypt from 'bcrypt-nodejs';
-import { config } from '/services/config';
+import { config, localConfig } from '/services/config';
 const constraints = {
   username: {
     presence: true
@@ -25,7 +25,7 @@ const newUserConstraints = {
   }
 };
 
-const apiNamespace = config.apiPath;
+const apiNamespace = localConfig.apiPath;
 
 export default class SessionManagement {
   constructor() {

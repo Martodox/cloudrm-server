@@ -1,14 +1,14 @@
 import express from 'express';
 import swagger from 'swagger-jsdoc';
 import http from 'http';
-import { config } from '/services/config';
+import { config, localConfig } from '/services/config';
 import { Session, User } from '/models/index';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 const expressServer = express();
 const server = http.Server(expressServer);
 
-const apiNamespace = config.apiPath;
+const apiNamespace = localConfig.apiPath;
 
 const port = config['server-port'] || 3000;
 
