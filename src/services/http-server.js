@@ -14,7 +14,7 @@ const port = config['server-port'] || 3000;
 const authenticatedMiddleware = (req, res, next) => {
 
   if (!req.headers.authorization) {
-    return res.status(403).send(`Authorization token required to access ${req.method} ${req.baseUrl}`)
+    return res.status(403).send({error: `Authorization token required to access ${req.method} ${req.baseUrl}`});
   }
 
   const token = req.headers.authorization;
@@ -36,12 +36,12 @@ const authenticatedMiddleware = (req, res, next) => {
   }).then((row, err) => {
 
     if (!row) {
-      return res.status(403).send(`Bad token, access to ${req.method} ${req.baseUrl} not allowed`);
+      return res.status(403).send({error: `Bad token, access to ${req.method} ${req.baseUrl} not allowed`});
     }
 
     if (!row.User) {
       //TODO: #10 remove token from DB
-      return res.status(403).send(`Orphan token, access to ${req.method} ${req.baseUrl} not allowed`);
+      return res.status(403).send({error: `Orphan token, access to ${req.method} ${req.baseUrl} not allowed`});
     }
 
     req.Session = row;

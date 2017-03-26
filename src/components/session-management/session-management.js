@@ -28,6 +28,16 @@ const newUserConstraints = {
 export default class SessionManagement {
   constructor() {
 
+    /**
+     * @swagger
+     * /session:
+     *   get:
+     *     description: Gets current session
+     *     produces:
+     *       - application/json
+     *     tags:
+     *      - Session
+     */
     express.get('/session', (req, res) => {
       res.send(req.Session.User);
     });
@@ -52,10 +62,12 @@ export default class SessionManagement {
      *         type: string
      *     responses:
      *       200:
-     *         description: login
+     *         description: auth token
+     *       400:
+     *        description: error message
+     *     tags:
+     *      - Session
      */
-
-
     express.post('/session', (req, res) => {
 
       const isValid = validate(req.body, constraints);
@@ -97,6 +109,17 @@ export default class SessionManagement {
 
     });
 
+
+    /**
+     * @swagger
+     * /session:
+     *   delete:
+     *     description: Logout
+     *     produces:
+     *       - application/json
+     *     tags:
+     *      - Session
+     */
     express.delete('/session', (req, res) => {
 
       req.Session.destroy().then(rows => {
@@ -106,6 +129,32 @@ export default class SessionManagement {
 
     });
 
+    /**
+     * @swagger
+     * /session/new:
+     *   post:
+     *     description: Creates new account
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: username
+     *         description: Unique username
+     *         in: formData
+     *         required: true
+     *         type: string
+     *       - name: email
+     *         description: User email
+     *         in: formData
+     *         required: true
+     *         type: string
+     *       - name: password
+     *         description: User password
+     *         in: formData
+     *         required: true
+     *         type: string
+     *     tags:
+     *      - Session
+     */
     express.post('/session/new', (req, res) => {
 
       const isValid = validate(req.body, newUserConstraints);
