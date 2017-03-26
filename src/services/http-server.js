@@ -86,7 +86,7 @@ expressServer.get('/api-docs.json', function(req, res) {
   res.send(swaggerSpec);
 });
 
-
+expressServer.use('/docs', express.static('swagger'));
 
 
 server.listen(port, () => {
