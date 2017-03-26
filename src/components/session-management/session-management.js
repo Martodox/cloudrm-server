@@ -2,7 +2,7 @@ import { express } from '/services/http-server';
 import validate from 'validate.js';
 import { User, Session } from '/models/index';
 import bcrypt from 'bcrypt-nodejs';
-
+import { config } from '/services/config';
 const constraints = {
   username: {
     presence: true
@@ -25,20 +25,22 @@ const newUserConstraints = {
   }
 };
 
+const apiNamespace = config.apiPath;
+
 export default class SessionManagement {
   constructor() {
+
+
 
     /**
      * @swagger
      * /session:
      *   get:
      *     description: Gets current session
-     *     produces:
-     *       - application/json
      *     tags:
      *      - Session
      */
-    express.get('/session', (req, res) => {
+    express.get(apiNamespace + '/session', (req, res) => {
       res.send(req.Session.User);
     });
 
@@ -47,8 +49,6 @@ export default class SessionManagement {
      * /session:
      *   post:
      *     description: Login to the application
-     *     produces:
-     *       - application/json
      *     parameters:
      *       - name: username
      *         description: Username to use for login.
@@ -68,7 +68,7 @@ export default class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post('/session', (req, res) => {
+    express.post(apiNamespace + '/session', (req, res) => {
 
       const isValid = validate(req.body, constraints);
 
@@ -115,12 +115,10 @@ export default class SessionManagement {
      * /session:
      *   delete:
      *     description: Logout
-     *     produces:
-     *       - application/json
      *     tags:
      *      - Session
      */
-    express.delete('/session', (req, res) => {
+    express.delete(apiNamespace + '/session', (req, res) => {
 
       req.Session.destroy().then(rows => {
         res.send({status: 'Successfully logged out'});
@@ -134,8 +132,6 @@ export default class SessionManagement {
      * /session/new:
      *   post:
      *     description: Creates new account
-     *     produces:
-     *       - application/json
      *     parameters:
      *       - name: username
      *         description: Unique username
@@ -155,7 +151,7 @@ export default class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post('/session/new', (req, res) => {
+    express.post(apiNamespace + '/session/new', (req, res) => {
 
       const isValid = validate(req.body, newUserConstraints);
 

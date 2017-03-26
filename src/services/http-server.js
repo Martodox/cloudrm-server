@@ -5,9 +5,10 @@ import { config } from '/services/config';
 import { Session, User } from '/models/index';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
 const expressServer = express();
 const server = http.Server(expressServer);
+
+const apiNamespace = config.apiPath;
 
 const port = config['server-port'] || 3000;
 
@@ -55,7 +56,7 @@ const authenticatedMiddleware = (req, res, next) => {
 
 expressServer.use(cors());
 
-expressServer.use('/session', (req, res, next) => {
+expressServer.use(apiNamespace + '/session', (req, res, next) => {
   switch(req.method) {
     case 'GET':
     case 'DELETE':
@@ -77,8 +78,11 @@ const swaggerSpec = swagger({
       title: 'Cloudrm',
       version: '1.0.0',
     },
+    basePath: apiNamespace + '/',
+    produces: ['application/json'],
+    consumes: ['application/json']
   },
-  apis: ['./src/components/**/*.js']
+  apis: ['./src/**/*.js']
 });
 
 expressServer.get('/api-docs.json', function(req, res) {
@@ -86,7 +90,7 @@ expressServer.get('/api-docs.json', function(req, res) {
   res.send(swaggerSpec);
 });
 
-expressServer.use('/docs', express.static('swagger'));
+expressServer.use('/', express.static('swagger'));
 
 
 server.listen(port, () => {
