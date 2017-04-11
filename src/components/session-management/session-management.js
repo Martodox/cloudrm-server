@@ -1,4 +1,4 @@
-import { express } from '/services/http-server';
+import { express, authenticatedMiddleware } from '/services/http-server';
 import validate from 'validate.js';
 import { User, Session } from '/models/index';
 import bcrypt from 'bcrypt-nodejs';
@@ -26,6 +26,16 @@ const newUserConstraints = {
 };
 
 const apiNamespace = localConfig.apiPath;
+
+express.use(apiNamespace + '/session', (req, res, next) => {
+  switch(req.method) {
+    case 'GET':
+    case 'DELETE':
+      return authenticatedMiddleware(req, res, next);
+    default:
+      return next();
+  }
+});
 
 export default class SessionManagement {
   constructor() {

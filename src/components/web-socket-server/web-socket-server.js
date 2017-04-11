@@ -47,7 +47,7 @@ export default class WebSocketServer {
 
         let handshake = base64.decode(socket.handshake.query.handshake);
 
-        var decrypted = crypto.publicDecrypt(row.pem, new Buffer(handshake, "base64")).toString("utf8");
+        const decrypted = crypto.publicDecrypt(row.pem, new Buffer(handshake, "base64")).toString("utf8");
 
         if (socket.handshake.query.verificationString === decrypted) {
           return next();
@@ -59,6 +59,8 @@ export default class WebSocketServer {
         return next(new Error('Authentication error: bad key pair'));
       }
 
+    }).catch(error => {
+      console.log('Uncaught error', error);
     });
 
   }

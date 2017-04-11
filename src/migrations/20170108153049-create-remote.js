@@ -9,7 +9,9 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       device_id: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
       },
       pem: {
         type: Sequelize.TEXT

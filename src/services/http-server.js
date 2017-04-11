@@ -56,16 +56,6 @@ const authenticatedMiddleware = (req, res, next) => {
 
 expressServer.use(cors());
 
-expressServer.use(apiNamespace + '/session', (req, res, next) => {
-  switch(req.method) {
-    case 'GET':
-    case 'DELETE':
-      return authenticatedMiddleware(req, res, next);
-    default:
-      return next();
-  }
-});
-
 expressServer.use(bodyParser.urlencoded({
   extended: true
 }));
@@ -99,5 +89,6 @@ server.listen(port, () => {
 
 export {
   expressServer as express,
-  server as http
+  server as http,
+  authenticatedMiddleware as authenticatedMiddleware
 }

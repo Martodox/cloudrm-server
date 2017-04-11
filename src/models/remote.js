@@ -1,6 +1,6 @@
 export default function(sequelize, DataTypes) {
   var Remote = sequelize.define('Remote', {
-    device_id: DataTypes.STRING,
+    device_id: { type: DataTypes.STRING, unique: true },
     pem: DataTypes.TEXT
   }, {
     classMethods: {
