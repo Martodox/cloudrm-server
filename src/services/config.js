@@ -1,5 +1,5 @@
 const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../../config.json');
+const config = require('../../config.json');
 
 const envConfig = config[env];
 

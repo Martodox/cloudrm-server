@@ -1,12 +1,10 @@
 import keypair from 'keypair';
-import webworkerThreads from 'webworker-threads';
 import validate from 'validate.js';
 
 import { express, authenticatedMiddleware } from '/services/http-server';
 import { Remote } from '/models/index';
 import { config, localConfig } from '/services/config';
 
-const { Worker } = webworkerThreads;
 
 const apiNamespace = localConfig.apiPath;
 
