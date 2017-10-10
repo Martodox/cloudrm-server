@@ -26,7 +26,9 @@ const newRemoteConstraints = {
 
 
 export default class RemoteManagement {
-  constructor() {
+  constructor(SocketServer) {
+
+    this.socketServer = SocketServer;
 
     /**
      * @swagger
@@ -41,13 +43,13 @@ export default class RemoteManagement {
      *         type: string
      *     responses:
      *       200:
-     *         description: auth token
+     *         description: public key
      *       400:
      *        description: error message
      *     tags:
      *      - Remote
      */
-    express.post(apiNamespace + '/remotes/new', (req, res) => {
+    express.post(`${apiNamespace}/remotes/new`, (req, res) => {
 
 
       const isValid = validate(req.body, newRemoteConstraints);
@@ -82,6 +84,85 @@ export default class RemoteManagement {
       });
 
     });
+
+    /**
+     * @swagger
+     * /remotes/:remoteId/invoke/:action/on/:deviceName:
+     *   post:
+     *     description: Allows an action to be invoked on the remote
+     *     parameters:
+     *       - name: remoteId
+     *         description: Unique remotes's id. Usually mac address
+     *         in: formData
+     *         required: false
+     *         type: string
+     *       - name: action
+     *         description: action on the device
+     *         in: formData
+     *         required: false
+     *         type: string
+     *       - name: deviceName
+     *         description: device on the remote
+     *         in: formData
+     *         required: false
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: ok
+     *       400:
+     *        description: error message
+     *     tags:
+     *      - Remote
+     */
+    express.post(`${apiNamespace}/remotes/:remoteId/invoke/:action/on/:deviceName`, (req, res) => {
+
+      const remote = this.socketServer.getRemote(req.body.remoteId);
+
+
+      let device = remote.filter(device => device.name === req.body.deviceName);
+
+      //need to be one
+
+        device = device[0];
+
+      let hasAction = device.actions.indexOf(req.body.action) >= 0;
+
+      if (hasAction) {
+
+        this.socketServer.getRemoteConnection(req.body.remoteId).emit('invokeAction', {
+          device: req.body.deviceName,
+          action: req.body.action
+        });
+        console.log(`Action ${req.body.action} invoked on ${req.body.remoteId} - ${req.body.deviceName}`);
+      }
+
+
+
+      res.send('ok');
+
+    });
+
+
+    /**
+     * @swagger
+     * /remotes:
+     *   get:
+     *     description: List of remotes user can controll
+     *     responses:
+     *       200:
+     *         description: list of devices
+     *       400:
+     *        description: error message
+     *     tags:
+     *      - Remote
+     */
+    express.get(`${apiNamespace}/remotes`, (req, res) => {
+
+        res.send(this.socketServer.getRemotes())
+
+    });
+
+
 
   }
 }

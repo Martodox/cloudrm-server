@@ -71,6 +71,7 @@ export default class WebSocketServer {
    */
   _startListening() {
 
+
     this.socketIo.on('connection', socket => {
 
       this.remotes[socket.handshake.query.remoteId] = socket;
@@ -81,9 +82,34 @@ export default class WebSocketServer {
         delete this.remotes[socket.handshake.query.remoteId];
       });
 
+      socket.on('availableActions', actions => {
+
+        socket.availableActions = actions;
+
+        console.log('List of available devices', actions)
+      })
+
     });
 
   }
 
+  getRemotes() {
+    const remotes = {};
+
+    for(let remote in this.remotes) {
+      remotes[remote] = this.remotes[remote]['availableActions']
+    }
+
+    return remotes;
+
+  }
+
+  getRemote(remoteId) {
+    return this.getRemotes()[remoteId];
+  }
+
+  getRemoteConnection(remoteId) {
+    return this.remotes[remoteId];
+  }
 
 };

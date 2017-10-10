@@ -3,8 +3,9 @@ import SessionManagement from '/components/session-management/session-management
 import RemoteManagement from '/components/remote-management/remote-management';
 
 
-new WebSocketServer();
-new SessionManagement();
-new RemoteManagement();
+const SocketServer = new WebSocketServer();
+
+new SessionManagement(SocketServer);
+new RemoteManagement(SocketServer);
 
 
