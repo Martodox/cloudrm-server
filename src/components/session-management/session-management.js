@@ -37,7 +37,7 @@ express.use(apiNamespace + '/session', (req, res, next) => {
   }
 });
 
-export default class SessionManagement {
+export class SessionManagement {
   constructor() {
 
 

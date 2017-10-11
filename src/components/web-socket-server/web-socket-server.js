@@ -6,7 +6,7 @@ import { Remote } from '/models/index';
 import { http } from '/services/http-server';
 
 
-export default class WebSocketServer {
+export class WebSocketServer {
 
   constructor() {
 
@@ -74,6 +74,7 @@ export default class WebSocketServer {
 
     this.socketIo.on('connection', socket => {
 
+
       this.remotes[socket.handshake.query.remoteId] = socket;
       console.log(`Remote connected: ${socket.handshake.query.remoteId}`);
 
@@ -84,7 +85,7 @@ export default class WebSocketServer {
 
       socket.on('availableActions', actions => {
 
-        socket.availableActions = actions;
+        this.remotes[socket.handshake.query.remoteId].availableActions = actions;
 
         console.log('List of available devices', actions)
       })

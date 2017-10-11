@@ -25,7 +25,7 @@ const newRemoteConstraints = {
 // });
 
 
-export default class RemoteManagement {
+export class RemoteManagement {
   constructor(SocketServer) {
 
     this.socketServer = SocketServer;
