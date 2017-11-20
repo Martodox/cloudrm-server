@@ -6,6 +6,7 @@
   "repository": "git@github.com:Martodox/cloudrm-server.git",
   "scripts": {
     "start": "nodemon src/index.js --exec babel-node",
+    "debug": "nodemon src/index.js --exec babel-node --inspect=9222",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
     "test": "mocha --compilers js:babel-register"
@@ -30,6 +31,7 @@
     "keypair": "^1.0.1",
     "mysql": "^2.12.0",
     "node-uuid": "^1.4.7",
+    "rxjs-es": "^5.0.0-beta.12",
     "sequelize": "^3.29.0",
     "socket.io": "^1.7.2",
     "swagger-jsdoc": "^1.9.2",
