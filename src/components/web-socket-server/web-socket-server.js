@@ -100,7 +100,7 @@ export class WebSocketServer {
     for(let remote in this.remotes) {
       remotes.push({
           id: remote,
-          actions: this.remotes[remote]['availableActions']
+          devices: this.remotes[remote]['availableActions']
       })
     }
 
@@ -109,7 +109,7 @@ export class WebSocketServer {
   }
 
   getRemote(remoteId) {
-    return this.getRemotes()[remoteId];
+    return this.getRemotes().find(remote => remote.id === remoteId)
   }
 
   getRemoteConnection(remoteId) {

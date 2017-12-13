@@ -126,9 +126,9 @@ export class RemoteManagement {
           });
       }
 
-      let device = remote.filter(device => device.name === req.body.deviceName);
+      let device = remote.devices.find(device => device.name === req.body.deviceName);
 
-      if (device.length === 0) {
+      if (!device) {
           res.status(404);
           return res.send({
               error: 'Device not found'
@@ -136,8 +136,6 @@ export class RemoteManagement {
       }
 
       //need to be one
-
-        device = device[0];
 
       let hasAction = device.actions.indexOf(req.body.action) >= 0;
 
