@@ -9,7 +9,8 @@
     "debug": "nodemon src/index.js --exec babel-node --inspect=9222",
     "build": "babel src -d dist",
     "serve": "node dist/index.js",
-    "test": "mocha --compilers js:babel-register"
+    "test": "mocha --compilers js:babel-register",
+    "migrate": "sequelize db:migrate"
   },
   "author": "Bartosz Jakubowiak <bartosz@jakubowiak.pl>",
   "license": "MIT",

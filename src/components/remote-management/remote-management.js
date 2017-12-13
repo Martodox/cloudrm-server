@@ -119,7 +119,21 @@ export class RemoteManagement {
       const remote = this.socketServer.getRemote(req.body.remoteId);
 
 
+      if (!remote) {
+          res.status(404);
+          return res.send({
+              error: 'Remote not found'
+          });
+      }
+
       let device = remote.filter(device => device.name === req.body.deviceName);
+
+      if (device.length === 0) {
+          res.status(404);
+          return res.send({
+              error: 'Device not found'
+          });
+      }
 
       //need to be one
 
@@ -127,18 +141,38 @@ export class RemoteManagement {
 
       let hasAction = device.actions.indexOf(req.body.action) >= 0;
 
-      if (hasAction) {
+      if (!hasAction) {
 
-        this.socketServer.getRemoteConnection(req.body.remoteId).emit('invokeAction', {
-          device: req.body.deviceName,
-          action: req.body.action
+        res.status(404);
+        return res.send({
+            error: 'Action not found'
         });
-        console.log(`Action ${req.body.action} invoked on ${req.body.remoteId} - ${req.body.deviceName}`);
+
       }
 
+      this.socketServer.getRemoteConnection(req.body.remoteId).emit('invokeAction', {
+        device: req.body.deviceName,
+        action: req.body.action
+      });
+      console.log(`Action ${req.body.action} invoked on ${req.body.remoteId} - ${req.body.deviceName}`);
 
 
-      res.send('ok');
+      const eventName = `${req.body.remoteId}:${req.body.deviceName}:${req.body.action}`;
+
+      let handleResponse = (state) => {
+
+          res.send({
+              eventName: eventName,
+              state: state
+          });
+
+          this.socketServer.getRemoteConnection(req.body.remoteId).removeListener(eventName, handleResponse);
+      };
+
+      this.socketServer.getRemoteConnection(req.body.remoteId).on(eventName, handleResponse);
+
+
+
 
     });
 
