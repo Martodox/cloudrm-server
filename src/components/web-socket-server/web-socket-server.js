@@ -99,7 +99,7 @@ export class WebSocketServer {
 
     for(let remote in this.remotes) {
       remotes.push({
-          remote: remote,
+          id: remote,
           actions: this.remotes[remote]['availableActions']
       })
     }
