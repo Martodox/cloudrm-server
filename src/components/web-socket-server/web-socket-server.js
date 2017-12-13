@@ -95,10 +95,13 @@ export class WebSocketServer {
   }
 
   getRemotes() {
-    const remotes = {};
+    const remotes = [];
 
     for(let remote in this.remotes) {
-      remotes[remote] = this.remotes[remote]['availableActions']
+      remotes.push({
+          remote: remote,
+          actions: this.remotes[remote]['availableActions']
+      })
     }
 
     return remotes;

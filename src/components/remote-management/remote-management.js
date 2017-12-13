@@ -192,7 +192,9 @@ export class RemoteManagement {
      */
     express.get(`${apiNamespace}/remotes`, (req, res) => {
 
-        res.send(this.socketServer.getRemotes())
+        res.send({
+            remotes: this.socketServer.getRemotes()
+        })
 
     });
 
