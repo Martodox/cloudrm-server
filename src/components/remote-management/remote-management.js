@@ -190,9 +190,11 @@ export class RemoteManagement {
      */
     express.get(`${apiNamespace}/remotes`, (req, res) => {
 
-        res.send({
-            remotes: this.socketServer.getRemotes()
-        })
+
+
+
+
+        res.send(this.socketServer.getEmberRemotes())
 
     });
 

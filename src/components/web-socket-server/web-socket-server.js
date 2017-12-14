@@ -100,12 +100,42 @@ export class WebSocketServer {
     for(let remote in this.remotes) {
       remotes.push({
           id: remote,
-          devices: this.remotes[remote]['availableActions']
+          devices: this.remotes[remote]['availableActions'].map(device => {
+            device.id = `${remote}:${device.name}`;
+            return device;
+          })
       })
     }
 
     return remotes;
 
+  }
+
+  getEmberRemotes() {
+      const remotes = [];
+      let devices = [];
+
+      for(let remote in this.remotes) {
+          remotes.push({
+              id: remote,
+              devices: this.remotes[remote]['availableActions'].map(device => {
+                  return `${remote}:${device.name}`;
+              })
+          })
+      }
+
+      for(let remote in this.remotes) {
+          devices = devices.concat(this.remotes[remote]['availableActions'].map(device => {
+              device.id = `${remote}:${device.name}`;
+              device.remote = remote;
+              return device;
+          }))
+      }
+
+      return {
+        remotes: remotes,
+        devices: devices
+      };
   }
 
   getRemote(remoteId) {
