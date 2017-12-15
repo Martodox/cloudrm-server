@@ -78,7 +78,7 @@ export class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post(apiNamespace + '/session', (req, res) => {
+    express.post(apiNamespace + '/session', async (req, res) => {
 
       const isValid = validate(req.body, constraints);
 
@@ -89,32 +89,30 @@ export class SessionManagement {
         });
       }
 
-      User.find({
+      const user = await User.find({
         where: {
           username: req.body.username
         }
-      }).then((row, error) => {
+      });
 
-        if (!row || !bcrypt.compareSync(req.body.password, row.password)) {
+      if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
           return res.status(400).send({
-            message: 'Request invalid',
-            reason: {
-              'email_password': 'Bad password or username'
-            }
+              message: 'Request invalid',
+              reason: {
+                  'email_password': 'Bad password or username'
+              }
           });
-        }
+      }
 
-        const token = Session.rawAttributes.token.defaultValue();
+      const token = Session.rawAttributes.token.defaultValue();
 
-        Session.upsert({
-          'user_id': row.id,
+      await Session.upsert({
+          'user_id': user.id,
           token: token
-        }).then((row, err) => {
-          return res.send({
-            token: token
-          })
-        })
+      });
 
+      return res.send({
+          token: token
       });
 
     });

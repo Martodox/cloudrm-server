@@ -5,7 +5,10 @@ export default function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        // associations can be defined here
+          Remote.belongsToMany(models.User, {
+              through: models.UserRemote,
+              foreignKey: 'user_id'
+          })
       }
     }
   });

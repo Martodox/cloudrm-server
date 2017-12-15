@@ -6,7 +6,14 @@ export default function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        User.hasOne(models.Session, {foreignKey: 'id'})
+        User.hasOne(models.Session, {
+          foreignKey: 'id'
+        });
+        User.belongsToMany(models.Remote, {
+            through: models.UserRemote,
+            foreignKey: 'remote_id'
+        })
+
       }
     }
   });
