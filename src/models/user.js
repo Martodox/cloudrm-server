@@ -11,7 +11,7 @@ export default function(sequelize, DataTypes) {
         });
         User.belongsToMany(models.Remote, {
             through: models.UserRemote,
-            foreignKey: 'remote_id'
+            foreignKey: 'user_id'
         })
 
       }

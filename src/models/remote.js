@@ -7,7 +7,7 @@ export default function(sequelize, DataTypes) {
       associate: function(models) {
           Remote.belongsToMany(models.User, {
               through: models.UserRemote,
-              foreignKey: 'user_id'
+              foreignKey: 'remote_id'
           })
       }
     }
