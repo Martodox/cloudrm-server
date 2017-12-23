@@ -2,7 +2,7 @@ import socketIo from 'socket.io';
 import crypto from 'crypto';
 import base64 from 'urlsafe-base64';
 
-import { Remote } from '/models/index';
+import { Remote, User } from '/models/index';
 import { http } from '/services/http-server';
 
 
@@ -111,25 +111,42 @@ export class WebSocketServer {
 
   }
 
-  getEmberRemotes() {
+  async getEmberRemotes(userid) {
       const remotes = [];
       let devices = [];
 
-      for(let remote in this.remotes) {
+      let userRemotes = await User.findOne({
+          where: {
+              id: userid
+          },
+          include: [
+              {
+                  model: Remote
+              }
+          ]
+      });
+
+      userRemotes = userRemotes.Remotes.map(remote => remote.device_id);
+
+      let addRemote = (remote) => {
           remotes.push({
               id: remote,
               devices: this.remotes[remote]['availableActions'].map(device => {
                   return `${remote}:${device.name}`;
               })
-          })
-      }
+          });
 
-      for(let remote in this.remotes) {
           devices = devices.concat(this.remotes[remote]['availableActions'].map(device => {
               device.id = `${remote}:${device.name}`;
               device.remote = remote;
               return device;
-          }))
+          }));
+      };
+
+      for(let remote in this.remotes) {
+          if (userRemotes.indexOf(remote) >= 0) {
+              addRemote(remote);
+          }
       }
 
       return {

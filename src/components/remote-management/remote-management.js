@@ -87,7 +87,7 @@ export class RemoteManagement {
 
         /**
          * @swagger
-         * /remotes/:remoteId/invoke/:action/on/:deviceName:
+         * /remotes/invoke:
          *   post:
          *     description: Allows an action to be invoked on the remote
          *     parameters:
@@ -114,7 +114,7 @@ export class RemoteManagement {
          *     tags:
          *      - Remote
          */
-        express.post(`${apiNamespace}/remotes/:remoteId/invoke/:action/on/:deviceName`, async (req, res) => {
+        express.post(`${apiNamespace}/remotes/invoke`, async (req, res) => {
 
 
             const userRemotes = await User.findOne({
@@ -208,10 +208,13 @@ export class RemoteManagement {
          *     tags:
          *      - Remote
          */
-        express.get(`${apiNamespace}/remotes`, (req, res) => {
+        express.get(`${apiNamespace}/remotes`, async (req, res) => {
 
 
-            res.send(this.socketServer.getEmberRemotes())
+
+            res.send(await this.socketServer.getEmberRemotes(req.Session.User.id))
+
+
 
         });
 

@@ -27,7 +27,7 @@ const newUserConstraints = {
 
 const apiNamespace = localConfig.apiPath;
 
-express.use(apiNamespace + '/session', (req, res, next) => {
+express.use(apiNamespace + '/sessions', (req, res, next) => {
   switch(req.method) {
     case 'GET':
     case 'DELETE':
@@ -44,19 +44,26 @@ export class SessionManagement {
 
     /**
      * @swagger
-     * /session:
+     * /sessions:
      *   get:
      *     description: Gets current session
      *     tags:
      *      - Session
      */
-    express.get(apiNamespace + '/session', (req, res) => {
-      res.send(req.Session.User);
+    express.get(apiNamespace + '/sessions', (req, res) => {
+
+      let response = {
+          session: req.Session.User.dataValues
+      };
+
+      response.session.token = req.headers.token;
+
+      res.send(response);
     });
 
     /**
      * @swagger
-     * /session:
+     * /sessions:
      *   post:
      *     description: Login to the application
      *     parameters:
@@ -78,9 +85,12 @@ export class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post(apiNamespace + '/session', async (req, res) => {
+    express.post(apiNamespace + '/sessions', async (req, res) => {
 
-      const isValid = validate(req.body, constraints);
+      
+      const newSession = req.body.session;
+
+      const isValid = validate(newSession, constraints);
 
       if (!!isValid) {
         return res.status(400).send({
@@ -91,11 +101,11 @@ export class SessionManagement {
 
       const user = await User.find({
         where: {
-          username: req.body.username
+          username: newSession.username
         }
       });
 
-      if (!user || !bcrypt.compareSync(req.body.password, user.password)) {
+      if (!user || !bcrypt.compareSync(newSession.password, user.password)) {
           return res.status(400).send({
               message: 'Request invalid',
               reason: {
@@ -111,22 +121,27 @@ export class SessionManagement {
           token: token
       });
 
-      return res.send({
-          token: token
-      });
+      let response = {
+        session: user.dataValues
+      };
+
+      response.session.token = token;
+      delete response.session.password;
+
+      return res.send(response);
 
     });
 
 
     /**
      * @swagger
-     * /session:
+     * /sessions:
      *   delete:
      *     description: Logout
      *     tags:
      *      - Session
      */
-    express.delete(apiNamespace + '/session', (req, res) => {
+    express.delete(apiNamespace + '/sessions', (req, res) => {
 
       req.Session.destroy().then(rows => {
         res.send({status: 'Successfully logged out'});
@@ -137,7 +152,7 @@ export class SessionManagement {
 
     /**
      * @swagger
-     * /session/new:
+     * /sessions/new:
      *   post:
      *     description: Creates new account
      *     parameters:
@@ -159,7 +174,7 @@ export class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post(apiNamespace + '/session/new', (req, res) => {
+    express.post(apiNamespace + '/sessions/new', (req, res) => {
 
       const isValid = validate(req.body, newUserConstraints);
 

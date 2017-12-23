@@ -99,7 +99,7 @@
         var token = $('#input_token').val();
 
         if (token && token.trim() !== "" ) {
-          window.swaggerUi.api.clientAuthorizations.add("api_key", new window.SwaggerClient.ApiKeyAuthorization("authorization", token, "header"));
+          window.swaggerUi.api.clientAuthorizations.add("api_key", new window.SwaggerClient.ApiKeyAuthorization("token", token, "header"));
           console.log("authorization added: Bearer = " + token);
         }
       }
