@@ -7,6 +7,7 @@ import {config, localConfig} from '/services/config';
 
 
 const apiNamespace = localConfig.apiPath;
+const TIMEOUT = 2000;
 
 const newRemoteConstraints = {
     deviceId: {
@@ -179,15 +180,24 @@ export class RemoteManagement {
 
             const eventName = `${req.body.remoteId}:${req.body.deviceName}:${req.body.action}`;
 
+            let timeout = setTimeout(() => {
+                res.status(408);
+                res.send({
+                    error: 'Action timed out'
+                });
+                this.socketServer.getRemoteConnection(req.body.remoteId).removeListener(eventName, handleResponse);
+            }, TIMEOUT);
+
             let handleResponse = (state) => {
 
                 res.send({
                     eventName: eventName,
                     state: state
                 });
-
+                clearTimeout(timeout);
                 this.socketServer.getRemoteConnection(req.body.remoteId).removeListener(eventName, handleResponse);
             };
+
 
             this.socketServer.getRemoteConnection(req.body.remoteId).on(eventName, handleResponse);
 
