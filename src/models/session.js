@@ -2,7 +2,7 @@ import uuid from 'node-uuid';
 
 export default function(sequelize, DataTypes) {
   var Session = sequelize.define('Session', {
-    user_id: DataTypes.INTEGER,
+    user_id: { type: DataTypes.INTEGER, unique: false },
     token: {
       type: DataTypes.STRING,
       defaultValue: () => {
