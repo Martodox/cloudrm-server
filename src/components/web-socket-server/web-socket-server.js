@@ -1,7 +1,9 @@
 import socketIo from 'socket.io';
 import crypto from 'crypto';
 import base64 from 'urlsafe-base64';
+import socketioWildcard from 'socketio-wildcard';
 
+import { events } from '../../services/event-bus';
 import { Remote, User } from '/models/index';
 import { http } from '/services/http-server';
 
@@ -12,7 +14,7 @@ export class WebSocketServer {
 
     this.socketIo = socketIo(http);
     this.remotes = {};
-
+    this.socketIo.use(socketioWildcard());
     this.socketIo.use((socket, next) => {
       return this._authMiddleware(socket, next)
     });
@@ -80,6 +82,7 @@ export class WebSocketServer {
 
       socket.on('disconnect', () => {
         console.log(`Remote had disconnected: ${socket.handshake.query.remoteId}`);
+        events.observer.next({payload: 'remoteDisconnected', remoteId: socket.handshake.query.remoteId, internal: true});
         delete this.remotes[socket.handshake.query.remoteId];
       });
 
@@ -87,7 +90,6 @@ export class WebSocketServer {
 
         this.remotes[socket.handshake.query.remoteId].availableActions = actions;
 
-        console.log('List of available devices', actions)
       })
 
     });
@@ -160,7 +162,8 @@ export class WebSocketServer {
   }
 
   getRemoteConnection(remoteId) {
+
     return this.remotes[remoteId];
   }
 
-};
+}
