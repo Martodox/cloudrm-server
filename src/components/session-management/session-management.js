@@ -174,9 +174,11 @@ export class SessionManagement {
      *     tags:
      *      - Session
      */
-    express.post(apiNamespace + '/sessions/new', (req, res) => {
+    express.post(apiNamespace + '/session/new', (req, res) => {
 
-      const isValid = validate(req.body, newUserConstraints);
+      let newAccount = req.body['session/new'];
+
+      const isValid = validate(newAccount, newUserConstraints);
 
       if (!!isValid) {
         return res.status(400).send({
@@ -188,8 +190,8 @@ export class SessionManagement {
       User.findAll({
         where: {
           $or: {
-            username: req.body.username,
-            email: req.body.email
+            username: newAccount.username,
+            email: newAccount.email
           }
         }
       }).then((row, error) => {
@@ -203,28 +205,30 @@ export class SessionManagement {
           });
         }
 
-        const password = bcrypt.hashSync(req.body.password);
+        const password = bcrypt.hashSync(newAccount.password);
 
         //TODO: better error handling!
 
         User.create({
           password: password,
-          username: req.body.username,
-          email: req.body.email
+          username: newAccount.username,
+          email: newAccount.email
         }).then((row, err) => {
 
           Session.create({
             'user_id': row.id
           }).then((row, err) => {
             return res.send({
-              token: row.token,
-              user: {
-                username: req.body.username,
-                email: req.body.email
+              'session/new': {
+                  id: row.id,
+                  token: row.token,
+                  user: {
+                      username: newAccount.username,
+                      email: newAccount.email
+                  }
               }
             })
           })
-
         })
 
       });
