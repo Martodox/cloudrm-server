@@ -1,16 +1,16 @@
 import {Event} from "./Event";
 
-const trigger = 'GRZYBY_1:Button1:press';
+const trigger = 'PI_LOCAL_2:Button2:touch';
 
 const actionsToPerform = [
     {
-        remote: 'GRZYBY_1',
+        remote: 'PI_LOCAL_2',
         device: 'Switch1',
         action: 'toggleState'
     },
     {
-        remote: 'GRZYBY_1',
-        device: 'Switch2',
+        remote: 'PI_LOCAL_1',
+        device: 'Switch1',
         action: 'toggleState'
     }
 ];
@@ -23,21 +23,27 @@ export class Zagadka1 extends Event{
 
         this.events.subscribe((data) => {
             if (data.payload[0] === trigger) {
-                this.triggerAction('Zagadka1:Button1:start');
+                Event.triggerAction('Zagadka1:Button1:start');
 
                 console.log('Włączam timer')
 
                 setTimeout(() => {
 
                     actionsToPerform.forEach(action => {
-                        this.socketServer.getRemoteConnection(action.remote).emit('invokeAction', {
-                            device: action.device,
-                            action: action.action
-                        });
+                        this.invokeAction(action.remote, action.device, action.action);
                     });
 
+                        let i = 1;
+                        actionsToPerform.forEach(action => {
+                            setTimeout(() => {
+                                this.invokeAction(action.remote, action.device, action.action);
+                            }, 1000 * i++)
 
-                    this.triggerAction('Zagadka1:Button1:done')
+                        });
+
+
+
+                    Event.triggerAction('Zagadka1:Button1:done')
                 }, 2000)
 
 

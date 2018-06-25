@@ -19,7 +19,7 @@ export class Event {
                 action
             });
         } catch (e) {
-            console.log(`${remote} not found or not connected!`);
+            console.log(`${new Date()} | ${remote} not found or not connected!`);
             console.error(e);
         }
     }

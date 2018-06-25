@@ -175,7 +175,7 @@ export class RemoteManagement {
                 device: req.body.deviceName,
                 action: req.body.action
             });
-            console.log(`Action ${req.body.action} invoked on ${req.body.remoteId} - ${req.body.deviceName}`);
+            console.log(`${new Date()} | Action ${req.body.action} invoked on ${req.body.remoteId} - ${req.body.deviceName}`);
 
 
             const eventName = `${req.body.remoteId}:${req.body.deviceName}:${req.body.action}`;

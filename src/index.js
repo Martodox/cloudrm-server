@@ -16,6 +16,6 @@ new RemoteManagement(SocketServer);
 allEvents.forEach(event => new event(SocketServer));
 
 eventBus.subscribe(event => {
-    console.log('LOG!', JSON.stringify(event));
+    console.log(`${new Date()} | LOG!`, JSON.stringify(event));
 });
 

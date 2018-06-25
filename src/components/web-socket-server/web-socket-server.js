@@ -62,7 +62,7 @@ export class WebSocketServer {
       }
 
     }).catch(error => {
-      console.log('Uncaught error', error);
+      console.log(`${new Date()} | Uncaught error`, error);
     });
 
   }
@@ -78,16 +78,16 @@ export class WebSocketServer {
 
 
       this.remotes[socket.handshake.query.remoteId] = socket;
-      console.log(`Remote connected: ${socket.handshake.query.remoteId}`);
+      console.log(`${new Date()} | Remote connected: ${socket.handshake.query.remoteId}`);
 
       socket.on('disconnect', () => {
-        console.log(`Remote had disconnected: ${socket.handshake.query.remoteId}`);
+        console.log(`${new Date()} | Remote had disconnected: ${socket.handshake.query.remoteId}`);
         events.observer.next({payload: 'remoteDisconnected', remoteId: socket.handshake.query.remoteId, internal: true});
         delete this.remotes[socket.handshake.query.remoteId];
       });
 
       socket.on('availableActions', actions => {
-
+        console.log(`${new Date()} | Setting actions of ${socket.handshake.query.remoteId}`)
         this.remotes[socket.handshake.query.remoteId].availableActions = actions;
 
       })
