@@ -72,7 +72,7 @@ export class RemoteManagement {
                     key: keys.private
                 })
             }, err => {
-                console.log(err);
+                console.log(new Date(), err);
                 res.status(400).send({
                     message: 'Request invalid.',
                     reason: err

@@ -130,15 +130,20 @@ export class WebSocketServer {
 
       userRemotes = userRemotes.Remotes.map(remote => remote.device_id);
 
-      let addRemote = (remote) => {
+      let addRemote = (remote, remotesList) => {
+
+          if (!remotesList[remote]['availableActions']) {
+            return;
+          }
+
           remotes.push({
               id: remote,
-              devices: this.remotes[remote]['availableActions'].map(device => {
+              devices: remotesList[remote]['availableActions'].map(device => {
                   return `${remote}:${device.name}`;
               })
           });
 
-          devices = devices.concat(this.remotes[remote]['availableActions'].map(device => {
+          devices = devices.concat(remotesList[remote]['availableActions'].map(device => {
               device.id = `${remote}:${device.name}`;
               device.remote = remote;
               return device;
@@ -147,7 +152,7 @@ export class WebSocketServer {
 
       for(let remote in this.remotes) {
           if (userRemotes.indexOf(remote) >= 0) {
-              addRemote(remote);
+              addRemote(remote, this.remotes);
           }
       }
 
